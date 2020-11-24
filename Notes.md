@@ -69,10 +69,10 @@ bytes. These different variants have different amounts of options:
 
 | Command Variant                   | Number of options | Meaning                 |
 | :-------------------------------- | :---------------- | :---------------------- |
-| [`00 00`](#00-00-command-variant) | 6 bytes, 3 shorts | *Unknown*               |
-| [`02 00`](#02-00-command-variant) | 4 bytes, 2 shorts | *Unknown*               |
-| [`03 00`](#03-00-command-variant) | 4 bytes, 2 shorts | Modify colour (?)       |
-| [`04 00`](#04-00-command-variant) | 2 bytes, 1 short  | *Unknown*               |
+| [`00 00`](#00-00-command-variant) | Variable bytes    | Ruby characters         |
+| [`02 00`](#02-00-command-variant) | 4 bytes, 2 shorts | Font size               |
+| [`03 00`](#03-00-command-variant) | 4 bytes, 2 shorts | Font colour             |
+| [`04 00`](#04-00-command-variant) | 2 bytes, 1 short  | Page break              |
 
 **For example:** The string of bytes, "`0E 00 00 00 03 00 02 00 FF FF`" means:
 
@@ -94,12 +94,23 @@ Japanese language MSBT files.
 
 #### `00 00` Command Variant
 
-Currently Unknown.
+These are [Ruby characters](https://en.wikipedia.org/wiki/Ruby_character).  
+Example: `小`
+
+```
+0e00 - Marker
+0000 - System
+0000 - Ruby
+0800 - (4 + 2*kana_len)=8, therefore kana_len=2
+0200 - 2*kanji_len=2, therefore kanji_len=1
+0400 - 2*kana_len=4, therefore kana_len=2
+61304430 - ちい - kana
+0f5c - 小 - kanji
+```
 
 
 #### `02 00` Command Variant
 
-Currently Unknown.
 
 
 #### `03 00` Command Variant
@@ -115,7 +126,8 @@ Currently Unknown.
 
 ### `28 00` Command Type
 
-Currently unknown.
+Currently unknown.  
+All occurrences of this command appear to match the regex `0e002800[a-f0-9]{2}00040000cd0000`, so only one byte varies.
 
 
 ### `0A 00` Command Type
